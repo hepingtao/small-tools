@@ -96,6 +96,50 @@ def login_interactive(host):
     # return child
 
 
+def scp(scp_args):
+    *scp_opt, source, target = scp_args
+    scp_opt = ' '.join(scp_opt)
+    host = ''
+    source_path = ''
+    target_path = ''
+    try:
+        host, source_path = source.split(':')
+    except ValueError:
+        pass
+    try:
+        host, target_path = target.split(':')
+    except ValueError:
+        pass
+    try:
+        host_ip, env, root_path = host_ip_env[host]
+    except:
+        print(f"Host {host} is unknown.")
+        return
+    user_passwd = userpass[env]
+    username, password = user_passwd['username'], user_passwd['password']
+    if source_path:
+        source = f'{username}@{host_ip}:{source_path}'
+    if target_path:
+        target = f'{username}@{host_ip}:{target_path}'
+    if scp_opt:
+        scp_full_cmd = f'scp {scp_opt} {source} {target}'
+    else:
+        scp_full_cmd = f'scp {source} {target}'
+    print(scp_full_cmd)
+    child = pexpect.spawn(scp_full_cmd)
+    i = child.expect([pexpect.TIMEOUT, PROMPT_CONTINUE, PROMPT_PASSWD])
+    if i == 0:  # Timeout
+        print('ERROR!')
+        print('SSH could not login. Here is what SSH said:')
+        print(child.before, child.after)
+        sys.exit(1)
+    elif i == 1:  # SSH does not have the public key. Just accept it.
+        child.sendline('yes')
+        child.expect(PROMPT_PASSWD)
+    child.sendline(password)
+    child.interact()
+
+
 if __name__ == '__main__':
     try:
         target_host_ip = sys.argv[1]
