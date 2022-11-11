@@ -35,7 +35,7 @@ def login(host):
     child.expect(PROMPT_COMMAND)
     print(child.before.decode('utf-8').strip('\r\n'), end='')
     print(child.after.decode('utf-8').strip('\r\n'), end='')
-    child.sendline(r'export PS1="$(hostname -i) $PS1"')
+    child.sendline(rf'export PS1="{host_ip} $PS1"')
     child.expect(PROMPT_COMMAND)
     print(child.before.decode('utf-8').strip('\r\n'), end='')
     print(child.after.decode('utf-8').strip('\r\n'), end='')
@@ -90,7 +90,7 @@ def login_interactive(host):
     print(child.before.decode('utf-8').strip('\r\n'), end='')
     print(child.after.decode('utf-8').strip('\r\n'), end='')
     # child.sendline(r'export PS1="$(hostname -i) [\u@\h \W]\$"')
-    child.sendline(r'export PS1="$(hostname -i) $PS1"')
+    child.sendline(rf'export PS1="{host_ip} $PS1"')
     child.sendline(f'cd {root_path}')
     child.interact()
     # return child
