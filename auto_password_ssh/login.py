@@ -20,6 +20,7 @@ def login(host):
     user_passwd = userpass[env]
     username, password = user_passwd['username'], user_passwd['password']
     child = pexpect.spawn(f'ssh {username}@{host_ip}')
+    child.setwinsize(48, 200)
     i = child.expect([pexpect.TIMEOUT, PROMPT_CONTINUE, PROMPT_PASSWD])
     if i == 0:  # Timeout
         print('ERROR!')
@@ -66,6 +67,7 @@ def login(host):
 
 
 def login_interactive(host):
+    host = str(host)
     try:
         host_ip, env, root_path = host_ip_env[host]
     except:
@@ -74,6 +76,7 @@ def login_interactive(host):
     user_passwd = userpass[env]
     username, password = user_passwd['username'], user_passwd['password']
     child = pexpect.spawn(f'ssh {username}@{host_ip}')
+    child.setwinsize(48, 200)
     i = child.expect([pexpect.TIMEOUT, PROMPT_CONTINUE, PROMPT_PASSWD])
     if i == 0:  # Timeout
         print('ERROR!')
