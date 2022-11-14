@@ -12,6 +12,7 @@ PROMPT_PASSWD = '[Pp]assword: '
 
 
 def login(host):
+    host = str(host)
     try:
         host_ip, env, root_path = host_ip_env[host]
     except:
